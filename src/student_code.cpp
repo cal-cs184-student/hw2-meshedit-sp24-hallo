@@ -13,8 +13,15 @@ namespace CGL {
      * @return A vector containing intermediate points or the final interpolated vector
      */
     std::vector<Vector2D> BezierCurve::evaluateStep(std::vector<Vector2D> const &points) {
-        // TODO Part 1.
-        return std::vector<Vector2D>();
+        // TODO (DONE) Part 1.
+        if (points.size() <= 1) {
+            return points;
+        }
+        vector<Vector2D> lerp;
+        for (int i = 0; i < points.size() - 1; ++i) {
+            lerp.push_back((1 - t) * points.at(i) + t * points.at(i + 1));
+        }
+        return lerp;
     }
 
     /**
