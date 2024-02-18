@@ -1,6 +1,15 @@
 .DS_Store
 build/
+src2/
+*~
+vstudio
+build
+.idea
+.vscode
 .vs
-*.json
 out/
-Debug/
+cmake-build-debug
+xcode
+build-dbg/
+*.swp
+*.json
