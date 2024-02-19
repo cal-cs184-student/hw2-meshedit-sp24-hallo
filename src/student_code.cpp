@@ -78,7 +78,7 @@ namespace CGL {
     }
 
     Vector3D Vertex::normal(void) const {
-        // TODO Part 3.
+        // TODO (DONE) Part 3.
         // Returns an approximate unit normal at this vertex, computed by
         // taking the area-weighted average of the normals of neighboring
         // triangles, then normalizing.
@@ -90,12 +90,12 @@ namespace CGL {
         Vector3D p = h->vertex()->position;
         do {
             // get edges of next triangle
-            Vector3D p1 = h->twin()->next()->vertex()->position;
+            Vector3D p1 = h->twin()->next()->next()->vertex()->position;
             Vector3D p2 = h->twin()->vertex()->position;
             Vector3D v1 = p1 - p;
             Vector3D v2 = p2 - p;
             // normal by area is half the cross product
-            Vector3D cross_prod = cross(v2, v1);
+            Vector3D cross_prod = cross(v1, v2);
             n += cross_prod / 2;
             h = h->twin()->next();
         } while (h != start);
@@ -105,7 +105,53 @@ namespace CGL {
     EdgeIter HalfedgeMesh::flipEdge(EdgeIter e0) {
         // TODO Part 4.
         // This method should flip the given edge and return an iterator to the flipped edge.
-        return EdgeIter();
+        if (e0->isBoundary()) {
+            return e0;
+        }
+        // List of all elements: half-edges, vertices, edges, and faces
+        HalfedgeIter bc = e0->halfedge();
+        HalfedgeIter ca = bc->next();
+        HalfedgeIter ac = ca->twin();
+        HalfedgeIter ab = ca->next();
+        HalfedgeIter ba = ab->twin();
+        HalfedgeIter cb = bc->twin();
+        HalfedgeIter bd = cb->next();
+        HalfedgeIter db = bd->twin();
+        HalfedgeIter dc = bd->next();
+        HalfedgeIter cd = dc->twin();
+        VertexIter a = ab->vertex();
+        VertexIter b = bc->vertex();
+        VertexIter c = ca->vertex();
+        VertexIter d = dc->vertex();
+        EdgeIter e1 = ca->edge();
+        EdgeIter e2 = ab->edge();
+        EdgeIter e3 = bd->edge();
+        EdgeIter e4 = dc->edge();
+        FaceIter f0 = bc->face();
+        FaceIter f1 = cb->face();
+        // Set the pointers
+        bc->setNeighbors(dc, cb, a, e0, f0);
+        ca->setNeighbors(bc, ac, c, e1, f0);
+        ac->setNeighbors(ac->next(), ca, a, e1, ac->face());
+        ab->setNeighbors(bd, ba, a, e2, f1);
+        ba->setNeighbors(ba->next(), ab, b, e2, ba->face());
+        cb->setNeighbors(ab, bc, d, e0, f1);
+        bd->setNeighbors(cb, db, b, e3, f1);
+        db->setNeighbors(db->next(), bd, d, e3, db->face());
+        dc->setNeighbors(ca, cb, d, e4, f0);
+        cd->setNeighbors(cd->next(), dc, c, e4, cd->face());
+        a->halfedge() = bc;
+        b->halfedge() = bd;
+        c->halfedge() = ca;
+        d->halfedge() = dc;
+        e0->halfedge() = bc;
+        e1->halfedge() = ca;
+        e2->halfedge() = ab;
+        e3->halfedge() = bc;
+        e4->halfedge() = dc;
+        f0->halfedge() = cb;
+        f1->halfedge() = bc;
+        return e0;
     }
 
     VertexIter HalfedgeMesh::splitEdge(EdgeIter e0) {
