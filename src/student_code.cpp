@@ -33,8 +33,15 @@ namespace CGL {
      * @return A vector containing intermediate points or the final interpolated vector
      */
     std::vector<Vector3D> BezierPatch::evaluateStep(std::vector<Vector3D> const &points, double t) const {
-        // TODO Part 2.
-        return std::vector<Vector3D>();
+        // TODO (DONE) Part 2.
+        if (points.size() <= 1) {
+            return points;
+        }
+        vector<Vector3D> lerp;
+        for (int i = 0; i < points.size() - 1; ++i) {
+            lerp.push_back((1 - t) * points.at(i) + t * points.at(i + 1));
+        }
+        return lerp;
     }
 
     /**
@@ -45,8 +52,11 @@ namespace CGL {
      * @return Final interpolated vector
      */
     Vector3D BezierPatch::evaluate1D(std::vector<Vector3D> const &points, double t) const {
-        // TODO Part 2.
-        return Vector3D();
+        // TODO (DONE) Part 2.
+        if (points.size() == 1) {
+            return points.at(0);
+        }
+        return evaluate1D(BezierPatch::evaluateStep(points, t), t);
     }
 
     /**
@@ -57,8 +67,14 @@ namespace CGL {
      * @return Final interpolated vector
      */
     Vector3D BezierPatch::evaluate(double u, double v) const {
-        // TODO Part 2.
-        return Vector3D();
+        // TODO (DONE) Part 2.
+        // interpolate along u
+        vector<Vector3D> interpolate_u;
+        for (vector<Vector3D> pt: controlPoints) {
+            interpolate_u.push_back(evaluate1D(pt, u));
+        }
+        // return interpolated along v
+        return evaluate1D(interpolate_u, v);
     }
 
     Vector3D Vertex::normal(void) const {
