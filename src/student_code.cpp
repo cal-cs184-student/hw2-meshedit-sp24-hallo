@@ -149,7 +149,7 @@ namespace CGL {
         h5->setNeighbors(h1, h9, d, e4, f0);
         h6->setNeighbors(h6->next(), h1, a, e1, h6->face());
         h7->setNeighbors(h7->next(), h2, b, e2, h7->face());
-        h8->setNeighbors(h8->next(), h8, d, e3, h8->face());
+        h8->setNeighbors(h8->next(), h4, d, e3, h8->face());
         h9->setNeighbors(h9->next(), h5, c, e4, h9->face());
         return e0;
     }
