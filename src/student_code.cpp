@@ -1,5 +1,7 @@
 #include "student_code.h"
 #include "mutablePriorityQueue.h"
+#include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -109,16 +111,16 @@ namespace CGL {
             return e0;
         }
         // List of all elements: half-edges, vertices, edges, and faces
-        HalfedgeIter h0 = e0->halfedge();
-        HalfedgeIter h1 = h0->next();
-        HalfedgeIter h2 = h1->next();
-        HalfedgeIter h3 = h0->twin();
-        HalfedgeIter h4 = h3->next();
-        HalfedgeIter h5 = h4->next();
-        HalfedgeIter h6 = h1->twin();
-        HalfedgeIter h7 = h2->twin();
-        HalfedgeIter h8 = h4->twin();
-        HalfedgeIter h9 = h5->twin();
+        HalfedgeIter h0 = e0->halfedge(); //bc
+        HalfedgeIter h1 = h0->next(); //ca
+        HalfedgeIter h2 = h1->next(); //ab
+        HalfedgeIter h3 = h0->twin(); //cb
+        HalfedgeIter h4 = h3->next(); //bd
+        HalfedgeIter h5 = h4->next(); //dc
+        HalfedgeIter h6 = h1->twin(); //ac
+        HalfedgeIter h7 = h2->twin(); //ba
+        HalfedgeIter h8 = h4->twin(); //db
+        HalfedgeIter h9 = h5->twin(); //cd
         VertexIter a = h2->vertex();
         VertexIter b = h0->vertex();
         VertexIter c = h1->vertex();
@@ -129,6 +131,7 @@ namespace CGL {
         EdgeIter e4 = h5->edge();
         FaceIter f0 = h0->face();
         FaceIter f1 = h3->face();
+
         // Set the pointers
         a->halfedge() = h0;
         b->halfedge() = h4;
@@ -154,11 +157,104 @@ namespace CGL {
         return e0;
     }
 
+
+
+
     VertexIter HalfedgeMesh::splitEdge(EdgeIter e0) {
         // TODO Part 5.
         // This method should split the given edge and return an iterator to the newly inserted vertex.
         // The halfedge of this vertex should point along the edge that was split, rather than the new edges.
-        return VertexIter();
+        if (e0->isBoundary()) {
+            return e0->halfedge()->vertex();
+        }
+
+        // List of all elements: half-edges, vertices, edges, and faces
+        HalfedgeIter h0 = e0->halfedge();
+        HalfedgeIter h1 = h0->next(); //ca
+        HalfedgeIter h2 = h1->next(); //ab
+        HalfedgeIter h3 = h0->twin(); //cb
+        HalfedgeIter h4 = h3->next(); //bd
+        HalfedgeIter h5 = h4->next(); //dc
+
+        VertexIter b = h0->vertex();
+        VertexIter c = h1->vertex();
+
+//        HalfedgeIter h6 = h1->twin(); //ac
+//        HalfedgeIter h7 = h2->twin(); //ba
+//        HalfedgeIter h8 = h4->twin(); //db
+//        HalfedgeIter h9 = h5->twin(); //cd
+
+        VertexIter a = h2->vertex();
+        VertexIter d = h5->vertex();
+
+        EdgeIter e1 = h1->edge(); //ac
+        EdgeIter e2 = h2->edge(); //ab
+        EdgeIter e3 = h4->edge(); //bd
+        EdgeIter e4 = h5->edge(); //dc
+
+        FaceIter f0 = h2->face(); //abm
+        FaceIter f1 = h3->face(); //bdc
+
+
+        // new midpoint
+        VertexIter m = newVertex();
+        m ->position = (b->position + c->position) * 0.5;
+
+        // new edges
+        EdgeIter e5 = newEdge(); //am
+        EdgeIter e6 = newEdge(); //md
+        EdgeIter e7 = newEdge(); //mc
+
+        // new halfedges
+        HalfedgeIter ham = newHalfedge();
+        HalfedgeIter hmc = newHalfedge();
+        HalfedgeIter hma = newHalfedge();
+        HalfedgeIter hmb = newHalfedge();
+        HalfedgeIter hmd = newHalfedge();
+        HalfedgeIter hdm = newHalfedge();
+
+        FaceIter f2 = newFace(); //acm
+        FaceIter f3 = newFace(); // cmd
+
+
+        //assign faces
+        f2->halfedge() = hmc;
+        f3->halfedge() = h5;
+        f0->halfedge() = h0;
+        f1->halfedge() = h4;
+
+
+        // assign edges
+        e5->halfedge() = ham;
+        e6->halfedge() = hmd;
+        e7->halfedge() = hmc;
+        e0->halfedge() = hmb; // mb
+
+        // assign vertices
+        m->halfedge() = hmd;
+
+        // half edges declare or reassign
+        ham->setNeighbors(hmc, hma, a, e5, f2);
+
+        hma->setNeighbors(h2, ham, m, e5, f0);
+        h1->setNeighbors(ham, h1->twin(), c, e1, f2);
+
+
+        hmc->setNeighbors(h1, h3, m, e7, f2);
+        h3->setNeighbors(hmd, hmc, c, e7, f3);
+        h5->setNeighbors(h3, h5->twin(), d, e4, f3);
+
+
+        hmd->setNeighbors(h5, hdm, m, e6, f3);
+        hdm->setNeighbors(hmb, hmd, d, e6, f1);
+        h4->setNeighbors(hdm, h4->twin(), b, e3, f1);
+
+
+        hmb->setNeighbors(h4, h0, m, e0, f1);
+        h0->setNeighbors(hma, hmb, b, e0, f0);
+        h2->setNeighbors(h0, h2->twin(), a, e2, f0);
+
+        return m;
     }
 
 
