@@ -59,7 +59,7 @@
 
 <h2 align="middle">Overview</h2>
 <p>
-    YOUR RESPONSE GOES HERE
+    In this homework assignment, Mesh Edit, we implemented the following: Bezier curves, Bezier surfaces, Phong shading, edge flip, edge split, and loop subdivision. Bezier curves were calculated using a recursive convex combination of control points. Bezier surfaces are an extension of Bezier curves; our implementation calculated Bezier curves along each dimension, which then resulted in a point on the Bezier surface. Phong shading is found by utilizing area-weighted vertex normals. Then, we implemented edge flip and edge split, which mainly consisted of reassigning pointers for the relevant objects and creating new objects and setting their pointers (for edge split). Finally, we implemented loop subdivision, which utilizes both edge flipping and edge splitting. All of this allowed us to not only see interactive visualizations of how Bezier curves are created but also directly edit and render 3D meshes in real time.
 </p>
 <br>
 
@@ -73,7 +73,7 @@
   Briefly explain de Casteljau's algorithm and how you implemented it in order to evaluate Bezier curves.
 </b>
 <p>
-    YOUR RESPONSE GOES HERE
+    De Casteljau's algorithm is used to create Bezier curves, which can be constructed using Berstein polynomials. In essence, we start with n control points and recursively subdivide until we have one point remaining. One iteration of a subdivision is taking a convex combination of two consecutive points, parameterized by t (where t is between 0 and 1, inclusive). In our implementation, we wrote a function called evaluateStep that does one recursive step. Then, we have a function called evaluate that calls evaluateStep, iteratively calculating the next level’s control points rather than recursive.
 </p>
 
 <br>
@@ -172,7 +172,7 @@
   Briefly explain how de Casteljau algorithm extends to Bezier surfaces and how you implemented it in order to evaluate Bezier surfaces.
 </b>
 <p>
-    YOUR RESPONSE GOES HERE
+    The de Casteljau algorithm extends to Bezier surfaces by evaluating the Bernstein polynomials along each dimension. For example, let’s say we have dimensions u and v. Then, we first take our 2D surface that becomes our control points, and interpolate along dimension u. Then we get a “moving” Bezier curve that is along dimension v. Finally, we evaluate this moving curve along dimension v to get our final point that’ll be on the Bezier surface.
 </p>
 <br>
 
@@ -181,7 +181,7 @@
   Show a screenshot of bez/teapot.bez (not .dae) evaluated by your implementation.
 </b>
 <p>
-    YOUR RESPONSE GOES HERE
+    Yay :D
 </p>
 <div align="middle">
     <img src="images/p2_2.png" align="middle" width="50%">
@@ -197,7 +197,7 @@
   Briefly explain how you implemented the area-weighted vertex normals.
 </b>
 <p>
-    YOUR RESPONSE GOES HERE
+    We implemented the area-weighted vertex normals by iterating about a central vertex (which I refer to as the current vertex). We use two properties of the cross product of two vectors: (1) the cross product is orthogonal via the right hand rule and (2) its norm is the area of parallelogram of the two vectors used for the cross product. Using this fact, an area-weighted surface normal for a triangle is half of the cross product of two of its edges. In our implementation, we called the two edges (vectors) v1 and v2, where v1 is the edge between h->twin()->next()->next()->vertex() and our current vertex; v2 is the edge between h->twin()->vertex() and our current vertex. Then, the area-weighted vertex normal is the normalized vector of the sum of the area-weighted surface normals.
 </p>
 
 <br>
@@ -207,7 +207,7 @@
   Show screenshots of dae/teapot.dae (not .bez) comparing teapot shading with and without vertex normals. Use <kbd>Q</kbd> to toggle default flat shading and Phong shading.
 </b>
 <p>
-    YOUR RESPONSE GOES HERE
+    Yay :D
 </p>
 <div align="middle">
     <table style="width:100%">
@@ -231,8 +231,11 @@
   Briefly explain how you implemented the edge flip operation and describe any interesting implementation / debugging tricks you have used.
 </b>
 <p>
-    YOUR RESPONSE GOES HERE
+    Implementing edge flip was (very bashy oml) mainly re-assigning pointers to the objects that already existed. First, we listed all of the elements including the half-edges, vertices, edges, and faces. Then, we re-assigned the relevant pointers: vertices’ halfedges, edge’s halfedges, faces’ halfedges, and halfedges’ neighbors. We drew out all the relevant objects as follows and implemented it.
 </p>
+<div align="middle">
+    <img src="images/edgeflip.png" align="middle" width="400px"/>
+</div>
 <br>
 
 
@@ -240,7 +243,7 @@
   Show screenshots of the teapot before and after some edge flips.
 </b>
 <p>
-    YOUR RESPONSE GOES HERE
+    Yay :D
 </p>
 
 <div align="middle">
@@ -275,8 +278,11 @@
     Write about your eventful debugging journey, if you have experienced one.
 </b>
 <p>
-    YOUR RESPONSE GOES HERE
+    We also had one bug (which was so simple I’m not even mad anymore), which somehow eluded us for a solid hour…but in the end we fixed it!
 </p>
+<div align="middle">
+    <img src="images/debug1.png" align="middle" width="400px"/>
+</div>
 <br>
 
 
@@ -285,14 +291,9 @@
   Briefly explain how you implemented the edge split operation and describe any interesting implementation / debugging tricks you have used.
 </b>
 <p>
-
-    First, I listed all of the existing elements available including the edges, the halfedges, vertices, faces and so on
-    (for example, refer to the diagram below, halfedges h0,h1,…,h5, vertices a,b,c,d, edges e1, e2, e3, e5 and faces f0, f1).
-    Then, I created a new vertex labeled midpoint, m, by finding the average position between the vertices a,b of the edge. 3 new edges, 6 new halfedges and 2 new faces are then created.
-    The faces are then assigned to a corresponding halfedges.
-    The edges are also assigned to halfedges.
-    Finally, we use setNeighbours to reassign all halfedges to the correct next halfedge, twin, vertex, edge and face.
-    Note that h0, the original edge and corresponding halfedges were reassigned to correspond to the split edge.
+    Just like edge flip, we listed all of the existing elements available including the edges, the halfedges, vertices, faces and so on (for example, refer to the diagram below, halfedges h0,h1,…,h5, vertices a,b,c,d, edges e1, e2, e3, e5 and faces f0, f1).
+    Then, we created a new vertex labeled midpoint, m, by finding the average position between the vertices a,b of the edge. 3 new edges, 6 new halfedges and 2 new faces are then created. The faces are then assigned to a corresponding halfedges.  The edges are also assigned to halfedges. Finally, we use setNeighbours to reassign all halfedges to the correct next halfedge, twin, vertex, edge and face. Note that h0, the original edge and corresponding halfedges were reassigned to correspond to the split edge.
+    For debugging, we drew out the diagram to visualize the edge split. A trick we used was instead of using numbers to label the halfedges (e.g. h10, h15), we tried labeling the halfedges by the letters of the edge it corresponds to in the diagram (e.g. hmc, ham. hma).
 </p>
 
 <br>
