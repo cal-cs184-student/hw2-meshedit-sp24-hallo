@@ -371,9 +371,7 @@
                 <img src="images/smooth_splits_flips.png" align="middle" width="400px"/>
                 <figcaption>smoothed many edge splits and flips</figcaption>
             </td>
-
         </tr>
-
     </table>
 </div>
 <br>
@@ -395,8 +393,26 @@
     EC: If you have implemented support for boundary edges, show screenshots of your implementation properly handling split operations on boundary edges.
 </b>
 <p>
-    YOUR RESPONSE GOES HERE
+    For boundary edges, if the edge is a boundary edge we identify which halfedge is boundary. Similar to normal implementation, we identified the elements first. We only created 4 new halfedges, 2 edges, and 1 new face. The assignments are done as shown below.
 </p>
+    <div align="middle">
+        <img src="images/edgeSplit_bound.jpg" align="middle" width="70%">
+    </div>
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/beetle.jpg" align="middle" width="500px"/>
+                    <figcaption>Beetle boundary edge</figcaption>
+                </td>
+                <td>
+                    <img src="images/beetle_split.jpg" align="middle" width="500px"/>
+                    <figcaption>split</figcaption>
+                </td>
+            </tr>
+
+
+        </table>
 <br>
 
 
