@@ -285,8 +285,16 @@
   Briefly explain how you implemented the edge split operation and describe any interesting implementation / debugging tricks you have used.
 </b>
 <p>
-    Created
+
+    First, I listed all of the existing elements available including the edges, the halfedges, vertices, faces and so on
+    (for example, refer to the diagram below, halfedges h0,h1,…,h5, vertices a,b,c,d, edges e1, e2, e3, e5 and faces f0, f1).
+    Then, I created a new vertex labeled midpoint, m, by finding the average position between the vertices a,b of the edge. 3 new edges, 6 new halfedges and 2 new faces are then created.
+    The faces are then assigned to a corresponding halfedges.
+    The edges are also assigned to halfedges.
+    Finally, we use setNeighbours to reassign all halfedges to the correct next halfedge, twin, vertex, edge and face.
+    Note that h0, the original edge and corresponding halfedges were reassigned to correspond to the split edge.
 </p>
+
 <br>
 
 
@@ -294,7 +302,7 @@
     Show screenshots of a mesh before and after some edge splits. 
 </b>
 <p>
-    YOUR RESPONSE GOES HERE
+    Below are screenshots of the teapot before and after 1 edge split, as well as after many many edge splits.
 </p>
 
 <div align="middle">
@@ -302,11 +310,11 @@
         <tr align="center">
             <td>
                 <img src="images/teapot_b_flip.png" align="middle" width="400px"/>
-                <figcaption>Teapot without edge split</figcaption>
+                <figcaption>Teapot before edge split</figcaption>
             </td>
             <td>
                 <img src="images/teapot_split1.png" align="middle" width="400px"/>
-                <figcaption>One edge split</figcaption>
+                <figcaption>Teapot after One edge split</figcaption>
             </td>
         </tr>
         <tr align="center">
@@ -323,7 +331,7 @@
         <tr align="center">
             <td>
                 <img src="images/tp_split_smooth.png" align="middle" width="400px"/>
-                <figcaption>smoothed many edge splits without wireframe</figcaption>
+                <figcaption>smoothed many edge splits</figcaption>
             </td>
         </tr>
 
@@ -337,7 +345,8 @@
     Show screenshots of a mesh before and after a combination of both edge splits and edge flips.
 </b>
 <p>
-    YOUR RESPONSE GOES HERE
+    Below are screenshots of the teapot before and after 1 edge split and 1 edge flip,
+    as well as after many many combinations of edge splits and flips.
 </p>
 
 
@@ -345,30 +354,24 @@
     <table style="width:100%">
         <tr align="center">
             <td>
-                <img src="images/tp1flip_1split.png" align="middle" width="400px"/>
-                <figcaption>Teapot with one flip and one split </figcaption>
+                <img src="images/teapot_b_flip.png" align="middle" width="400px"/>
+                <figcaption>Teapot before edge split</figcaption>
             </td>
             <td>
-                <img src="images/teapot_split1.png" align="middle" width="400px"/>
-                <figcaption>One edge split</figcaption>
+                <img src="images/tp1flip_1split.png" align="middle" width="400px"/>
+                <figcaption>Teapot after 1 flip and 1 split</figcaption>
             </td>
         </tr>
         <tr align="center">
             <td>
-                <img src="images/tp_split.png" align="middle" width="400px"/>
-                <figcaption>many edge splits</figcaption>
+                <img src="images/splits_flips.png" align="middle" width="400px"/>
+                <figcaption>many edge splits and flips</figcaption>
             </td>
             <td>
-                <img src="images/tp_split_wire.png" align="middle" width="400px"/>
-                <figcaption>smoothed many edge splits</figcaption>
+                <img src="images/smooth_splits_flips.png" align="middle" width="400px"/>
+                <figcaption>smoothed many edge splits and flips</figcaption>
             </td>
 
-        </tr>
-        <tr align="center">
-            <td>
-                <img src="images/tp_split_smooth.png" align="middle" width="400px"/>
-                <figcaption>smoothed many edge splits without wireframe</figcaption>
-            </td>
         </tr>
 
     </table>
@@ -379,14 +382,17 @@
 <b>
     Write about your eventful debugging journey, if you have experienced one.
 </b>
-<p>
-    YOUR RESPONSE GOES HERE
-</p>
+    <p>
+        For debugging, we drew out the diagram to visualize the edge split, which helped us identify missing or wrongly assigned pointers.
+    </p>
+    <div align="middle">
+        <img src="images/edgeSplit.jpeg" align="middle" width="70%">
+    </div>
 <br>
 
 
 <b>
-    If you have implemented support for boundary edges, show screenshots of your implementation properly handling split operations on boundary edges.
+    EC: If you have implemented support for boundary edges, show screenshots of your implementation properly handling split operations on boundary edges.
 </b>
 <p>
     YOUR RESPONSE GOES HERE
