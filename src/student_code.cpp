@@ -165,7 +165,67 @@ namespace CGL {
         // This method should split the given edge and return an iterator to the newly inserted vertex.
         // The halfedge of this vertex should point along the edge that was split, rather than the new edges.
         if (e0->isBoundary()) {
-            return e0->halfedge()->vertex();
+
+            HalfedgeIter h0 = e0->halfedge(); //ba
+            if (h0->isBoundary()) {
+                h0 = h0->twin();
+            }
+            HalfedgeIter h3 = h0->twin();
+            HalfedgeIter h1 = h0->next(); //ac
+            HalfedgeIter h2 = h1->next(); //cb
+
+            VertexIter b = h0->vertex();
+            VertexIter a = h1->vertex();
+            VertexIter c = h2->vertex();
+
+            EdgeIter e1 = h1->edge(); //ac
+            EdgeIter e2 = h2->edge(); //cb
+
+            FaceIter f0 = h2->face(); //abc
+
+            // new midpoint
+            VertexIter m = newVertex();
+            m ->position = (a->position + b->position) * 0.5;
+
+            // new edges
+            EdgeIter e3 = newEdge(); //cm
+            e3->isNew = true;
+            EdgeIter e4 = newEdge(); //am
+
+            // new halfedges
+            HalfedgeIter hma = newHalfedge(); // ma
+            HalfedgeIter ham = newHalfedge(); // am
+            HalfedgeIter hmc = newHalfedge(); // mc
+            HalfedgeIter hcm = newHalfedge(); // cm
+
+            FaceIter f1 = newFace();
+
+            //assign faces
+            f1->halfedge() = hcm;
+            f0->halfedge() = h2;
+
+            //assign edges
+            e3->halfedge() = hcm;
+            e4->halfedge() = hma;
+            e0->halfedge() = h0;
+
+            // assign vertices
+            m->halfedge() = hcm;
+
+
+            // half edges declare or reassign
+            hcm->setNeighbors(hma, hmc, c, e3, f1);
+            hmc->setNeighbors(h2, hcm, m, e3, f0);
+            hma->setNeighbors(h1, ham, m, e4, f1);
+            ham->setNeighbors(h3, hma, a, e4, f1);
+
+            h0->setNeighbors(hmc, h3, b, e0, f0);
+            h3->setNeighbors(h3->next(), h0, m, e0, f0);
+
+            h1->next() = hcm;
+            h1->face() = f1;
+
+            return m;
         }
 
         // List of all elements: half-edges, vertices, edges, and faces
@@ -201,7 +261,8 @@ namespace CGL {
         EdgeIter e6 = newEdge(); //md
         e6->isNew = true;
         EdgeIter e7 = newEdge(); //mc
-
+        e7->isNew = false;
+        e0->isNew = false;
 
         // new halfedges
         HalfedgeIter ham = newHalfedge();
@@ -301,10 +362,11 @@ namespace CGL {
         // are new, by setting the flat Edge::isNew. Note that in this loop, we only want to iterate over edges of
         // the original mesh---otherwise, we'll end up splitting edges that we just split (and the loop will never end!)
         for (EdgeIter e = mesh.edgesBegin(); e != mesh.edgesEnd(); e++) {
-            if (!(e->halfedge()->vertex()->isNew || e->halfedge()->twin()->vertex()->isNew)) {
+            if (!e->halfedge()->vertex()->isNew && !e->halfedge()->twin()->vertex()->isNew) {
                 VertexIter m = mesh.splitEdge(e);
                 m->newPosition = e->newPosition;
                 m->isNew = true;
+
             }
         }
 
