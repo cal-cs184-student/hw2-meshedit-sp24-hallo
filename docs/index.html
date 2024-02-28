@@ -460,8 +460,36 @@
 </b>
     <br>
 <p>
-    YOUR RESPONSE GOES HERE
-</p>
+    After loop subdivision, the mesh becomes more uniform and smooth. The sharp corners and edges are averaged and smoothed out. For example in the torus the sharp corners are smoothed out causing it to become a smooth ring shape. However, we can see that in the case of the cube, the shape becomes increasingly asymmetric since the original mesh had an asymmetric number of edges for the vertices. We can reduce the effect of smoothing out corners by adding more edges around the sharp corners. For example, splitting the edges in the diagonals of the cube surfaces lead to a more uniform subdivision,
+    causing it to have a relatively more spherical shape.</p>
+
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <td>
+                        <img src="images/cow.png" align="middle" width="400px"/>
+                        <figcaption>cow original</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/cow1.png" align="middle" width="400px"/>
+                        <figcaption>cow upsampled</figcaption>
+                    </td>
+
+                </tr>
+                <tr align="center">
+                    <td>
+                        <img src="images/torus.png" align="middle" width="400px"/>
+                        <figcaption>2</figcaption>
+                    </td>
+
+                    <td>
+                        <img src="images/tor.png" align="middle" width="400px"/>
+                        <figcaption>4</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
 <br>
     <br>
     <br>
@@ -470,9 +498,8 @@
   Load dae/cube.dae. Perform several iterations of loop subdivision on the cube. Notice that the cube becomes slightly asymmetric after repeated subdivisions. Can you pre-process the cube with edge flips and splits so that the cube subdivides symmetrically? Document these effects and explain why they occur. Also explain how your pre-processing helps alleviate the effects.
 </b>
     <br>
-<p>
-    YOUR RESPONSE GOES HERE
-</p>
+<p>The diagonal edges across the cube faces are only in one direction which causes the cube to become asymmetrical. To make the cube symmetrical, we split each diagonal on each face as seen below. </p>
+
     <div align="middle">
         <table style="width:100%">
             <tr align="center">
@@ -491,18 +518,38 @@
                     <img src="images/cube2.png" align="middle" width="400px"/>
                     <figcaption>2</figcaption>
                 </td>
-                <td>
-                    <img src="images/cube3.png" align="middle" width="400px"/>
-                    <figcaption>3</figcaption>
-                </td>
-            </tr>
-            <tr align="center">
+
                 <td>
                     <img src="images/cube4.jpg" align="middle" width="400px"/>
                     <figcaption>4</figcaption>
                 </td>
             </tr>
+        </table>
+    </div>
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/cubesplits.png" align="middle" width="400px"/>
+                    <figcaption>cube with extra splits</figcaption>
+                </td>
+                <td>
+                    <img src="images/csplit.png" align="middle" width="400px"/>
+                    <figcaption>1</figcaption>
+                </td>
 
+            </tr>
+            <tr align="center">
+                <td>
+                    <img src="images/cube5.png" align="middle" width="400px"/>
+                    <figcaption>Original</figcaption>
+                </td>
+
+                <td>
+                    <img src="images/smoothed.png" align="middle" width="400px"/>
+                    <figcaption>Now</figcaption>
+                </td>
+            </tr>
         </table>
     </div>
 <br>
