@@ -165,14 +165,8 @@ namespace CGL {
         // This method should split the given edge and return an iterator to the newly inserted vertex.
         // The halfedge of this vertex should point along the edge that was split, rather than the new edges.
         if (e0->isBoundary()) {
-            // extra credit
-//            HalfedgeIter h0 = e0->halfedge();
-//
-//            VertexIter m = newVertex();
-//            m ->position = (b->position + c->position) * 0.5;
             return e0->halfedge()->vertex();
         }
-
 
         // List of all elements: half-edges, vertices, edges, and faces
         HalfedgeIter h0 = e0->halfedge();
@@ -193,7 +187,7 @@ namespace CGL {
         EdgeIter e3 = h4->edge(); //bd
         EdgeIter e4 = h5->edge(); //dc
 
-        FaceIter f0 = h2->face(); //abm
+        FaceIter f0 = h2->face(); //abc
         FaceIter f1 = h3->face(); //bdc
 
 
@@ -207,7 +201,7 @@ namespace CGL {
         EdgeIter e6 = newEdge(); //md
         e6->isNew = true;
         EdgeIter e7 = newEdge(); //mc
-        e7->isNew = true;
+
 
         // new halfedges
         HalfedgeIter ham = newHalfedge();
@@ -233,7 +227,7 @@ namespace CGL {
         e6->halfedge() = hmd;
         e7->halfedge() = hmc;
         e0->halfedge() = hmb; // mb
-        e0->isNew = true;
+
 
         // assign vertices
         m->halfedge() = hmd;
@@ -258,7 +252,6 @@ namespace CGL {
         hmb->setNeighbors(h4, h0, m, e0, f1);
         h0->setNeighbors(hma, hmb, b, e0, f0);
         h2->setNeighbors(h0, h2->twin(), a, e2, f0);
-
         return m;
     }
 
@@ -308,26 +301,28 @@ namespace CGL {
         // are new, by setting the flat Edge::isNew. Note that in this loop, we only want to iterate over edges of
         // the original mesh---otherwise, we'll end up splitting edges that we just split (and the loop will never end!)
         for (EdgeIter e = mesh.edgesBegin(); e != mesh.edgesEnd(); e++) {
-            if (!(e->isNew)) {
+            if (!(e->halfedge()->vertex()->isNew || e->halfedge()->twin()->vertex()->isNew)) {
                 VertexIter m = mesh.splitEdge(e);
                 m->newPosition = e->newPosition;
                 m->isNew = true;
             }
         }
-        // 4. Flip any new edge that connects an old and new vertex.
 
+        // 4. Flip any new edge that connects an old and new vertex.
         for (EdgeIter e = mesh.edgesBegin(); e != mesh.edgesEnd(); e++) {
             if (e->isNew) {
                 HalfedgeIter h1 = e->halfedge();
                 if ((h1->vertex()->isNew && !h1->twin()->vertex()->isNew) ||
                     (!h1->vertex()->isNew && h1->twin()->vertex()->isNew)) {
                     mesh.flipEdge(e);
+                    e->isNew = false;
                 }
             }
         }
         // 5. Copy the new vertex positions into final Vertex::position.
         for (VertexIter v = mesh.verticesBegin(); v != mesh.verticesEnd(); v++ ) {
             v->position = v->newPosition;
+            v->isNew = false;
         }
 
     }
