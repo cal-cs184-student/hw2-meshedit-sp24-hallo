@@ -404,27 +404,90 @@
 <b>
   Briefly explain how you implemented the loop subdivision and describe any interesting implementation / debugging tricks you have used.
 </b>
+    <br>
 <p>
-    YOUR RESPONSE GOES HERE
+    Our implementation is
 </p>
+    <p>
+        Step 1: We computed the new positions for all the original vertices in the input mesh. We looped through all the existing vertices, setting isNew to false for all of them. Then according to the loop subdivision rule below, we found n and calculated u. Given the equation newPosition of old vertex = (1 - n * u) * original_position + u * original_neighbor_position_sum, we also found the sum of the original neighboring vertices by using a while loop, setting h=h->twin()->next() until it returns to the original h. All of the new positions found were stored in each vertex’s newPosition.
+    </p>
+    <div align="middle">
+        <img src="images/loopSubEqn.png" align="middle" width="70%">
+    </div>
+    <p>
+        Step 2: We iterated through all the edges and set isNew to false.
+        We then updated the position of the new vertex on the edge (A,B) using the equation
+    </p>
+    <p> new vertex Position = 3/8 * (A + B) + 1/8 * (C + D)
+        (refer to diagram on the right above).
+    </p>
+    <p>Step 3: We split every old edge in the mesh, by iterating through the edges, identifying whether the edge is from the original mesh and calling splitEdge(e).
+    </p>
+    <p> Step 4: we flipped only new edges connecting old and new vertices.</p>
+    <p>
+        Step 5: we looped through all the vertices and copied the new vertex positions into the final vertex position.
+    </p>
+    <p>
+        For debugging, we initially had problems where we’d label old edges that had been split as isNew=true, causing them to be flipped as well. By drawing the diagram below, we identified the problem. In step 3, we initially used isNew to identify if the edge is from the original mesh, but the 2 edges from splitting the original edge were always identified as old and continued to be split, resulting in an infinite loop. We solved this by checking if both vertices of an edge are old (isNew=false) instead.
+    </p>
+    <div align="middle">
+        <img src="images/debug.jpg" align="middle" width="30%">
+    </div>
+
+
 <br>
-
-
+    <br>
+    <br>
 <b>
   Take some notes, as well as some screenshots, of your observations on how meshes behave after loop subdivision. What happens to sharp corners and edges? Can you reduce this effect by pre-splitting some edges?
 </b>
+    <br>
 <p>
     YOUR RESPONSE GOES HERE
 </p>
 <br>
-
+    <br>
+    <br>
 
 <b>
   Load dae/cube.dae. Perform several iterations of loop subdivision on the cube. Notice that the cube becomes slightly asymmetric after repeated subdivisions. Can you pre-process the cube with edge flips and splits so that the cube subdivides symmetrically? Document these effects and explain why they occur. Also explain how your pre-processing helps alleviate the effects.
 </b>
+    <br>
 <p>
     YOUR RESPONSE GOES HERE
 </p>
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/cube0.png" align="middle" width="400px"/>
+                    <figcaption>cube original</figcaption>
+                </td>
+                <td>
+                    <img src="images/cube1.png" align="middle" width="400px"/>
+                    <figcaption>1</figcaption>
+                </td>
+
+            </tr>
+            <tr align="center">
+                <td>
+                    <img src="images/cube2.png" align="middle" width="400px"/>
+                    <figcaption>2</figcaption>
+                </td>
+                <td>
+                    <img src="images/cube3.png" align="middle" width="400px"/>
+                    <figcaption>3</figcaption>
+                </td>
+            </tr>
+            <tr align="center">
+                <td>
+                    <img src="images/cube4.jpg" align="middle" width="400px"/>
+                    <figcaption>4</figcaption>
+                </td>
+            </tr>
+
+        </table>
+    </div>
 <br>
 
 
